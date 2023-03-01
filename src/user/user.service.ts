@@ -1,9 +1,14 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
-import { Prisma, User } from '@prisma/client';
+import { Prisma, User as UserInterface } from '@prisma/client';
 import * as O from 'fp-ts/Option';
+import * as E from 'fp-ts/Either';
 import { PrismaService } from 'src/prisma.service';
-import { userSchema } from 'src/validation-schema/user';
+
 import { CreateUserDto } from './dto/create-user.dto';
+import UserCreationErrors from './domain/errors';
+import Email from './domain/email';
+import { Either } from 'fp-ts/Either';
+import User from './domain/user.model';
 
 @Injectable()
 export class UserService {
@@ -23,34 +28,40 @@ export class UserService {
     return O.none;
   }
 
-  async createUser(user: CreateUserDto): Promise<O.Option<number>> {
-    try {
-      await userSchema.validate(user, { strict: true });
-    } catch (e) {
-      throw new UnprocessableEntityException(
-        e.errors[0] ?? 'Validation failed',
-      );
+  async createUser(
+    userDto: CreateUserDto,
+  ): Promise<Either<UserCreationErrors, number>> {
+    const user = User.create(userDto);
+    if (E.isLeft(user)) {
+      return user;
     }
 
-    try {
-      const data = await this.prisma.user.create({
-        data: user,
-        select: {
-          id: true,
-        },
-      });
-
-      if (data) {
-        return O.some(data.id);
-      }
-
-      return O.none;
-    } catch (e) {
-      if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        if (e.code === 'P2002') {
-          throw new UnprocessableEntityException('Email is already taken');
-        }
-      }
+    const existingUser = userRepository.findUserByEmail(user.value.email);
+    if (existingUser) {
+      return E.left(UserCreationErrors.EmailAlreadyExists);
     }
+
+    return userRepository.saveUser(user);
+
+    // try {
+    //   const data = await this.prisma.user.create({
+    //     data: user,
+    //     select: {
+    //       id: true,
+    //     },
+    //   });
+    //
+    //   if (data) {
+    //     return O.some(data.id);
+    //   }
+    //
+    //   return O.none;
+    // } catch (e) {
+    //   if (e instanceof Prisma.PrismaClientKnownRequestError) {
+    //     if (e.code === UserCreationErrors.EmailAlreadyExists) {
+    //       throw new UnprocessableEntityException('Email is already taken');
+    //     }
+    //   }
+    // }
   }
 }

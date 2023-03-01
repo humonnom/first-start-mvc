@@ -7,9 +7,11 @@ import {
   Param,
   Post,
   Render,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import * as O from 'fp-ts/Option';
+import * as E from 'fp-ts/Either';
 import { CreateUserDto } from './dto/create-user.dto';
 import { isNil } from '@nestjs/common/utils/shared.utils';
 import { User } from '@prisma/client';
@@ -38,10 +40,13 @@ export class UserController {
       throw new BadRequestException('Age is required');
     }
 
-    const userId = await this.userService.createUser(request);
+    const userIdOrError = await this.userService.createUser(request);
 
-    if (O.isSome(userId)) {
-      return { id: userId.value };
+    if (E.isLeft(userIdOrError)) {
+      throw new UnprocessableEntityException({
+        message: 'User creation error',
+        code: userIdOrError.left,
+      });
     } else {
       return { id: null };
     }
