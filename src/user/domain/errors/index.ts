@@ -1,10 +1,14 @@
-enum UserCreationErrors {
+export enum UserCreationErrors {
   EmailAlreadyExists = 'P2002',
   InvalidEmail = 'InvalidEmail',
   InvalidAgeNumber = 'InvalidAgeNumber',
-  NotAppropriateEmail,
-  NotPositiveAge,
-  RandomAge,
+  NotAppropriateEmail = 'NotAppropriateEmail',
+  NotPositiveAge = 'NotPositiveAge',
+  RandomAge = 'RandomAge',
+}
+
+export enum UserFindErrors {
+  UserNotFound = 'UserNotFound',
 }
 
 export default UserCreationErrors;

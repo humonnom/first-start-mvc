@@ -10,24 +10,25 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import * as O from 'fp-ts/Option';
 import * as E from 'fp-ts/Either';
 import { CreateUserDto } from './dto/create-user.dto';
 import { isNil } from '@nestjs/common/utils/shared.utils';
-import { User } from '@prisma/client';
+
 @Controller()
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('/users/:id')
   @Render('find-user')
-  async findUser(@Param('id') id: string): Promise<{ user: User }> {
-    const user = await this.userService.findUser(id);
+  async findUser(@Param('id') id: string): Promise<{ user: CreateUserDto }> {
+    const userOrError = await this.userService.findUser(id);
 
-    if (O.isSome(user)) {
-      return { user: user.value };
+    if (E.isLeft(userOrError)) {
+      throw new NotFoundException({
+        message: 'Not existing user',
+      });
     } else {
-      throw new NotFoundException('Not existing user');
+      return { user: userOrError.right };
     }
   }
 
@@ -41,6 +42,10 @@ export class UserController {
     }
 
     const userIdOrError = await this.userService.createUser(request);
+
+    if (E.isRight(userIdOrError)) {
+      return { id: userIdOrError.right };
+    }
 
     if (E.isLeft(userIdOrError)) {
       throw new UnprocessableEntityException({
