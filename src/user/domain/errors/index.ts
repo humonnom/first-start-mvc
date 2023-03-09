@@ -1,5 +1,5 @@
 export enum UserCreationErrors {
-  EmailAlreadyExists = 'P2002',
+  EmailAlreadyExists = 'EmailAlreadyExists',
   InvalidEmail = 'InvalidEmail',
   InvalidAgeNumber = 'InvalidAgeNumber',
   NotAppropriateEmail = 'NotAppropriateEmail',

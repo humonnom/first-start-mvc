@@ -41,19 +41,16 @@ export class UserController {
       throw new BadRequestException('Age is required');
     }
 
-    const userIdOrError = await this.userService.createUser(request);
+    const userOrError = await this.userService.createUser(request);
 
-    if (E.isRight(userIdOrError)) {
-      return { id: userIdOrError.right };
-    }
-
-    if (E.isLeft(userIdOrError)) {
+    if (E.isLeft(userOrError)) {
       throw new UnprocessableEntityException({
         message: 'User creation error',
-        code: userIdOrError.left,
+        code: userOrError.left,
       });
     } else {
       return { id: null };
+      //TODO: return the created user id
     }
   }
 }

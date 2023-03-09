@@ -1,4 +1,6 @@
 enum AgeException {
-  NotPositive,
-  Random
+  NotPositive = 'Age must be positive',
+  Random = 'Random',
 }
+
+export default AgeException;
