@@ -7,66 +7,42 @@ import UserCreationErrors, { UserFindErrors } from './domain/errors';
 import Email from './domain/email';
 import { Either } from 'fp-ts/Either';
 import User from './domain/user.model';
+import UserRepository from './infra/user.repository';
+import * as O from 'fp-ts/Option';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private userRepository: UserRepository,
+  ) {}
 
-  async findUser(id: string): Promise<E.Either<UserFindErrors, CreateUserDto>> {
-    const data = await this.prisma.user.findUnique({
-      where: {
-        id: Number(id),
-      },
-      select: {
-        name: true,
-        age: true,
-        email: true,
-        phone: true,
-      },
-    });
+  async findUser(id: string): Promise<E.Either<UserFindErrors, User>> {
+    const data = await this.userRepository.findUserById(Number(id));
 
-    if (!data) {
+    if (O.isNone(data)) {
       return E.left(UserFindErrors.UserNotFound);
     } else {
-      return E.right(data);
+      return E.right(data.value);
     }
   }
 
   async createUser(
     userDto: CreateUserDto,
-  ): Promise<Either<UserCreationErrors, number>> {
+  ): Promise<Either<UserCreationErrors, User>> {
     const user = User.create(userDto);
     if (E.isLeft(user)) {
       return user;
     }
 
-    // const existingUser = userRepository.findUserByEmail(user.value.email);
-    // if (existingUser) {
-    //   return E.left(UserCreationErrors.EmailAlreadyExists);
-    // }
+    const existingUser = await this.userRepository.findUserByEmail(
+      user.right.email.value,
+    );
+    if (O.isSome(existingUser)) {
+      return E.left(UserCreationErrors.EmailAlreadyExists);
+    }
 
-    // return userRepository.saveUser(user);
-    // TODO: repository pattern 공부하고 적용하기
-
-    // try {
-    //   const data = await this.prisma.user.create({
-    //     data: user,
-    //     select: {
-    //       id: true,
-    //     },
-    //   });
-    //
-    //   if (data) {
-    //     return O.some(data.id);
-    //   }
-    //
-    //   return O.none;
-    // } catch (e) {
-    //   if (e instanceof Prisma.PrismaClientKnownRequestError) {
-    //     if (e.code === UserCreationErrors.EmailAlreadyExists) {
-    //       throw new UnprocessableEntityException('Email is already taken');
-    //     }
-    //   }
-    // }
+    const result = await this.userRepository.saveUser(user.right);
+    return E.right(result);
   }
 }

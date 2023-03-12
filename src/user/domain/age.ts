@@ -1,8 +1,9 @@
 import { Either, left, right } from 'fp-ts/Either';
+import AgeException from './errors/age.exception';
 
 class Age {
   static create(age: number): Either<AgeException, Age> {
-    if (age > 0) {
+    if (age < 0) {
       return left(AgeException.NotPositive);
     }
 
