@@ -1,0 +1,4 @@
+enum AgeException {
+  NotPositive,
+  Random
+}

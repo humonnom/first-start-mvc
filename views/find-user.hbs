@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <meta charset='utf-8' />
+    <title>App</title>
+  </head>
+  <body>
+
+    {{#if user.isPending}}
+      Loading...
+    {{else}}
+
+      <p>
+        Name:
+        {{user.name}}
+      </p>
+
+      <p>
+        Phone:
+        {{user.phone}}
+      </p>
+
+      <p>
+        Age:
+        {{user.age}}
+      </p>
+
+    {{/if}}
+  </body>
+</html>

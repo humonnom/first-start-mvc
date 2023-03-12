@@ -7,15 +7,15 @@ export class AppController {
 
   @Get('/')
   @Render('index')
-  getHello() {
-    const user = this.appService.getUser();
+  async getHello() {
+    const user = await this.appService.getUser();
     return { user };
   }
 
   @Get('/users')
   @Render('users')
-  getUsers() {
-    const users = this.appService.getUsers();
+  async getUsers() {
+    const users = await this.appService.getUsers();
     return { users };
   }
 }
