@@ -4,7 +4,6 @@ export enum UserCreationErrors {
   InvalidAgeNumber = 'InvalidAgeNumber',
   NotAppropriateEmail = 'NotAppropriateEmail',
   NotPositiveAge = 'NotPositiveAge',
-  RandomAge = 'RandomAge',
 }
 
 export enum UserFindErrors {

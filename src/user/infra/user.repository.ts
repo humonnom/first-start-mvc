@@ -1,5 +1,4 @@
 import * as O from 'fp-ts/Option';
-import { User as UserDao } from '@prisma/client';
 import User from '../domain/user.model';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
@@ -21,12 +20,16 @@ class UserRepository {
     return O.map(UserMapper.toDomain)(userOrNull);
   }
 
-  async findUserById(id: number): Promise<UserDao | null> {
-    return this.prisma.user.findUnique({
-      where: {
-        id,
-      },
-    });
+  async findUserById(id: number): Promise<O.Option<User>> {
+    const userOrNull = O.fromNullable(
+      await this.prisma.user.findUnique({
+        where: {
+          id,
+        },
+      }),
+    );
+
+    return O.map(UserMapper.toDomain)(userOrNull);
   }
 
   async saveUser(user: User): Promise<User> {

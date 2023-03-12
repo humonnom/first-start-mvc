@@ -17,23 +17,13 @@ export class UserService {
     private userRepository: UserRepository,
   ) {}
 
-  async findUser(id: string): Promise<E.Either<UserFindErrors, CreateUserDto>> {
-    const data = await this.prisma.user.findUnique({
-      where: {
-        id: Number(id),
-      },
-      select: {
-        name: true,
-        age: true,
-        email: true,
-        phone: true,
-      },
-    });
+  async findUser(id: string): Promise<E.Either<UserFindErrors, User>> {
+    const data = await this.userRepository.findUserById(Number(id));
 
-    if (!data) {
+    if (O.isNone(data)) {
       return E.left(UserFindErrors.UserNotFound);
     } else {
-      return E.right(data);
+      return E.right(data.value);
     }
   }
 

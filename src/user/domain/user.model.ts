@@ -31,9 +31,6 @@ class User {
         case AgeException.NotPositive:
           error = UserCreationErrors.NotPositiveAge;
           break;
-        case AgeException.Random:
-          error = UserCreationErrors.RandomAge;
-          break;
       }
       return E.left(error);
     }
