@@ -34,12 +34,7 @@ class UserRepository {
 
   async saveUser(user: User): Promise<User> {
     const createdUser = await this.prisma.user.create({
-      data: {
-        name: user.name,
-        age: user.age.value,
-        email: user.email.value,
-        phone: user.phone,
-      },
+      data: UserMapper.toPersistence(user),
     });
 
     return UserMapper.toDomain(createdUser);

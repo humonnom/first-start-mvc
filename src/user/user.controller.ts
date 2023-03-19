@@ -14,14 +14,13 @@ import * as E from 'fp-ts/Either';
 import { CreateUserDto } from './dto/create-user.dto';
 import { isNil } from '@nestjs/common/utils/shared.utils';
 import { UserMapper } from './domain/user.mapper';
-import { User as UserDao } from '@prisma/client';
 @Controller()
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('/users/:id')
   @Render('find-user')
-  async findUser(@Param('id') id: string): Promise<{ user: UserDao }> {
+  async findUser(@Param('id') id: string) {
     const userOrError = await this.userService.findUser(id);
 
     if (E.isLeft(userOrError)) {
@@ -29,12 +28,12 @@ export class UserController {
         message: 'Not existing user',
       });
     } else {
-      return { user: UserMapper.toPrisma(userOrError.right) };
+      return { user: UserMapper.toPersistence(userOrError.right) };
     }
   }
 
   @Post('/user')
-  async createUser(@Body() request: CreateUserDto): Promise<{ id: number }> {
+  async createUser(@Body() request: CreateUserDto) {
     if (isNil(request.email)) {
       throw new BadRequestException('Email is required');
     }
@@ -50,8 +49,7 @@ export class UserController {
         code: userOrError.left,
       });
     } else {
-      return { id: null };
-      //TODO: return the created user id
+      return { id: userOrError.right.id };
     }
   }
 }

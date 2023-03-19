@@ -5,7 +5,6 @@ import Age from './age';
 import * as E from 'fp-ts/Either';
 import EmailException from './errors/email.exception';
 import AgeException from './errors/age.exception';
-import { nanoid } from 'nanoid';
 
 // 1. const a = User({id: 1, name: "junsuk park", email:  "park64kr63@gmail.com"})
 // 2. const b = User({id: 2, name: "junsuk park", email: "jueun@naver.com"})
@@ -16,7 +15,7 @@ class User {
   readonly age: Age;
   readonly email: Email;
   readonly phone: string;
-  readonly id: string;
+  readonly id?: number;
 
   static create(dto: CreateUserDto): E.Either<UserCreationErrors, User> {
     const emailOrError = Email.create(dto.email);
@@ -44,7 +43,7 @@ class User {
 
     return E.right(
       new User({
-        id: nanoid(),
+        id: dto.id,
         name: dto.name,
         age: ageOrError.right,
         email: emailOrError.right,
@@ -60,7 +59,7 @@ class User {
     phone,
     id,
   }: {
-    id: string;
+    id?: number;
     name: string;
     age: Age;
     email: Email;
@@ -70,7 +69,9 @@ class User {
     this.age = age;
     this.email = email;
     this.phone = phone;
-    this.id = id;
+    if (id) {
+      this.id = id;
+    }
   }
 }
 

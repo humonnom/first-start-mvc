@@ -26,9 +26,9 @@
     "fp-ts": "^2.13.1",
     "hbs": "^4.2.0",
     "lodash": "^4.17.21",
-    "nanoid": "^4.0.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.5.5",
+    "ts-toolbelt": "^9.6.0",
     "yup": "^1.0.0"
   },
   "devDependencies": {
