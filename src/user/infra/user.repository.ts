@@ -1,7 +1,7 @@
 import * as O from 'fp-ts/Option';
 import User from '../domain/user.model';
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from '../../prisma.service';
 import { UserMapper } from '../domain/user.mapper';
 
 @Injectable()
