@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, User as UserInterface } from '@prisma/client';
 import * as E from 'fp-ts/Either';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from '../prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import UserCreationErrors, { UserFindErrors } from './domain/errors';
 import Email from './domain/email';
