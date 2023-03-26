@@ -32,10 +32,10 @@ describe('UserService', () => {
       userRepository.findUserByEmail.mockResolvedValueOnce(
         O.fromNullable(null),
       );
-      // TODO: 지금은 동작 fail하는데 saveUser를 mocking하기 않아서 그렇다. saveuser mocking 과제: save결과를 리턴하도록 수정
-      //  userRepository.saveUser.mockResolvedValueOnce(
-      //     O.fromNullable(null),
-      //   );
+
+      userRepository.saveUser.mockResolvedValueOnce(
+        UserMapper.toDomain({ id: 1, ...user }),
+      );
 
       const saved = await service.createUser(user);
       expect((saved as any).right?.id).not.toBeUndefined();
