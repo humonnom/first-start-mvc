@@ -17,6 +17,9 @@ class User {
   readonly phone: string;
   readonly id?: number;
 
+  accessToken?: string;
+  refreshToken?: string;
+
   static create(dto: CreateUserDto): E.Either<UserCreationErrors, User> {
     const emailOrError = Email.create(dto.email);
     const ageOrError = Age.create(dto.age);
@@ -72,6 +75,10 @@ class User {
     if (id) {
       this.id = id;
     }
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.accessToken;
   }
 }
 

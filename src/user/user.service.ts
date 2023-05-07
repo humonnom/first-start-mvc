@@ -9,12 +9,14 @@ import { Either } from 'fp-ts/Either';
 import User from './domain/user.model';
 import UserRepository from './infra/user.repository';
 import * as O from 'fp-ts/Option';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class UserService {
   constructor(
     private prisma: PrismaService,
     private userRepository: UserRepository,
+    private authService: AuthService,
   ) {}
 
   async findUser(id: string): Promise<E.Either<UserFindErrors, User>> {
@@ -43,6 +45,12 @@ export class UserService {
     }
 
     const result = await this.userRepository.saveUser(user.right);
+    result.accessToken = this.authService.signJWT({
+      userId: result.id.toString(),
+      email: result.email.value,
+    });
+    await this.authService.saveAuthenticatedUser(result);
+
     return E.right(result);
   }
 }

@@ -13,5 +13,15 @@ services:
     volumes:
       - mvc_start_db:/var/lib/postgresql/data
     restart: unless-stopped
+  redis:
+    container_name: redis
+    image: redis:6.0.9-alpine
+    environment:
+      REDIS_PASSWORD: redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+
 volumes:
   mvc_start_db:
