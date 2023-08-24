@@ -12,7 +12,7 @@ class Email {
 
     return right(new Email(email));
   }
-  private constructor(private readonly email: string) {}
+  constructor(private readonly email: string) {}
 
   get value(): string {
     return this.email;

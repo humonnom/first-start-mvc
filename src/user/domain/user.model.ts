@@ -21,41 +21,9 @@ class User {
   refreshToken?: string;
 
   static create(dto: CreateUserDto): E.Either<UserCreationErrors, User> {
-    const emailOrError = Email.create(dto.email);
-    const ageOrError = Age.create(dto.age);
-
-    if (E.isLeft(emailOrError)) {
-      let error: UserCreationErrors;
-      switch (emailOrError.left) {
-        case EmailException.NotAppropriate:
-          error = UserCreationErrors.NotAppropriateEmail;
-      }
-
-      return E.left(error);
-    }
-
-    if (E.isLeft(ageOrError)) {
-      let error: UserCreationErrors;
-      switch (ageOrError.left) {
-        case AgeException.NotPositive:
-          error = UserCreationErrors.NotPositiveAge;
-          break;
-      }
-      return E.left(error);
-    }
-
-    return E.right(
-      new User({
-        id: dto.id,
-        name: dto.name,
-        age: ageOrError.right,
-        email: emailOrError.right,
-        phone: dto.phone,
-      }),
-    );
   }
 
-  private constructor({
+  constructor({
     name,
     age,
     email,
