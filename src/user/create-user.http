@@ -1,14 +1,14 @@
-### POST
 POST http://localhost:3000/user
 Content-Type: application/json
 
 {
-  "name": "jueun",
-  "age": 29,
-  "phone": "010-1234-",
-  "email": "example2"
+  "name": "John Doe",
+  "age": 30,
+  "phone": "01012345678",
+  "email": "test@gmail.com"
 }
 
-### GET
-GET http://localhost:3000/users/0
-Accept: application/json
+###
+
+GET http://localhost:3000/users/1
+Content-Type: application/json

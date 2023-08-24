@@ -4,8 +4,8 @@ import { AppService } from './app.service';
 import { PrismaService } from './prisma.service';
 import { UserModule } from './user/user.module';
 import { AuthService } from './auth/auth.service';
-import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { AuthModule } from './auth/auth.module';
+import { RedisModule } from '@liaoliaots/nestjs-redis';
 
 @Module({
   imports: [
